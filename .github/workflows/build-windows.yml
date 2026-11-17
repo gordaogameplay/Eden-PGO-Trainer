@@ -1,0 +1,43 @@
+name: Build Windows release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PyInstaller
+        run: python -m pip install pyinstaller==6.22.3
+
+      - name: Build EXE
+        run: python -m PyInstaller --clean --noconfirm pgo_trainer.spec
+
+      - name: Assemble release folder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force release | Out-Null
+          Copy-Item dist/LichiiPGOTrainer.exe release/
+          Copy-Item emulator-source release/ -Recurse
+          Copy-Item licenses release/ -Recurse
+          Copy-Item README.md, README.en.md, pgo_core.py, pgo_trainer.py, run-windows.bat release/
+
+      - name: Zip release
+        shell: pwsh
+        run: Compress-Archive -Path release/* -DestinationPath LichiiPGOTrainer-Windows-x86_64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: LichiiPGOTrainer-Windows-x86_64.zip
+          if-no-files-found: error
