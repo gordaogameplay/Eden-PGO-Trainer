@@ -2,7 +2,7 @@
 
 [English](README.en.md) · **Português (Brasil)**
 
-Ferramenta gráfica (sem IA, sem downloads de jogo) para qualquer pessoa fazer **Profile-Guided Optimization (PGO)** do emulador Lichii/Eden (usado com *The Legend of Zelda: Ocarina of Time* emSwitch 2) **na própria máquina**, em **Linux ou Windows**.
+Ferramenta gráfica (sem IA, sem downloads de jogo) para qualquer pessoa fazer **Profile-Guided Optimization (PGO)** do emulador Lichii/Eden (usado com *The Legend of Zelda: Ocarina of Time* de Switch 2) **na própria máquina**, em **Linux ou Windows**.
 
 Ela automatiza o mesmo método que usamos na maratona de PGO:
 
@@ -12,6 +12,28 @@ Ela automatiza o mesmo método que usamos na maratona de PGO:
 4. **Junta todos os perfis** (os `.gcda` somam-se sozinhos) e **compila a build final** (`-fprofile-use`).
 
 > O binário e o perfil são **específicos da tua máquina** (CPU + GPU). Não se partilham. O que é partilhável é **este método** — e é exatamente o que este repositório faz.
+
+---
+
+## Para que serve esta ferramenta? (em 30 segundos)
+
+Emuladores de Switch 2 como o **Lichii/Eden** são programas enormes, com milhares de caminhos de código que só correm durante o jogo (shaders, áudio, E/S, HLE). O compilador, ao compilar "à cega", tem de adivinhar quais os ramos que são mais prováveis e que código deve ficar junto. O resultado é um binário **genérico** — que funciona em qualquer máquina, mas não é o melhor possível em **nenhuma**.
+
+**PGO (Profile-Guided Optimization)** resolve isso: você **joga**, o emulador grava estatísticas reais do que a tua CPU fez, e o compilador recompila o emulador **à medida do teu jogo e da tua máquina**.
+
+**Para que serve, na prática:**
+
+| sem PGO | com PGO (esta ferramenta) |
+|---|---|
+| Binário genérico, compilado "à cega" | Binário **afinado ao teu CPU** (preditor de ramos, caches, inlines) |
+| FPS instáveis em cenas pesadas | **Mais FPS e menos engasgos** no exato jogo que jogas |
+| Saber fazer PGO exige dominar GCC/Clang, CMake e 6 armadilhas | **Um botão**: a ferramenta trata de tudo |
+
+**O problema que ela resolve especificamente:** fazer PGO à mão é chato e frágil — é preciso saber que o contador estoura aos ~438 s, usar `-fprofile-update=atomic` (senão as threads corrompem os dados), fechar o jogo de forma limpa (senão o perfil não é gravado) e manter o **mesmo código** nas duas compilações (senão o GCC rejeita o perfil). Esta ferramenta **já traz tudo isso embutido** e funciona em **Linux e Windows** sem exigir que o utilizador saiba nada disto.
+
+> Exemplo real: foi com estes 3 treinos de 4 minutos que o Zelda OoT ficou estável a 60 FPS nesta máquina (Ryzen 5 4600G + RTX 3060). Não é magia — é o compilador a receber dados reais em vez de adivinhações.
+
+**Em resumo:** é uma ferramenta para quem quer **tirar mais performance do emulador do Zelda OoT** sem saber compilação avançada — basta ter o dump do jogo, escolher quantos treinos quer e carregar em INICIAR.
 
 ---
 

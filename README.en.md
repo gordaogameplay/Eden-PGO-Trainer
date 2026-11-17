@@ -15,6 +15,28 @@ It automates the exact method we used during the PGO marathon:
 
 ---
 
+## What is this tool for? (in 30 seconds)
+
+Switch 2 emulators like **Lichii/Eden** are huge programs with thousands of code paths that only run during gameplay (shaders, audio, I/O, HLE). When compiling "blind", the compiler has to guess which branches are most likely and which code should be kept together. The result is a **generic** binary — it works on any machine, but it's the best on **none**.
+
+**PGO (Profile-Guided Optimization)** fixes that: you **play**, the emulator records real statistics of what your CPU did, and the compiler rebuilds the emulator **tailored to your game and your machine**.
+
+**What it does, in practice:**
+
+| without PGO | with PGO (this tool) |
+|---|---|
+| Generic binary, compiled "blind" | Binary **tuned to your CPU** (branch predictor, caches, inlining) |
+| Unsteady FPS in heavy scenes | **More FPS and fewer stutters** in the exact game you play |
+| Doing PGO requires mastering GCC/Clang, CMake and 6 gotchas | **One button**: the tool handles all of it |
+
+**The specific problem it solves:** doing PGO by hand is tedious and fragile — you need to know the counter overflows at ~438 s, use `-fprofile-update=atomic` (or the threads corrupt each other's data), close the game cleanly (or the profile isn't written) and keep the **exact same code** in both builds (or GCC rejects the profile). This tool has **all of that built in** and works on **Linux and Windows** without requiring the user to know any of it.
+
+> Real example: these 3×4-minute sessions are what made Zelda OoT stable at 60 FPS on this machine (Ryzen 5 4600G + RTX 3060). Not magic — the compiler gets real data instead of guesses.
+
+**In short:** it's a tool for anyone who wants **more performance out of the OoT emulator** without knowing advanced compilation — just provide the game dump, choose how many sessions you want, and click START.
+
+---
+
 ## What's included
 
 | file / folder | what it is |
