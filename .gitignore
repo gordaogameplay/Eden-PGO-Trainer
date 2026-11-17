@@ -13,3 +13,11 @@ __pycache__/
 
 # Caches from the emulator source copy (downloaded dependencies)
 emulator-source/.cache/
+
+# Local build artifacts (releases are built in CI / on demand)
+dist/
+build/
+release-linux/
+release/
+.venv-build/
+*.spec.bak
