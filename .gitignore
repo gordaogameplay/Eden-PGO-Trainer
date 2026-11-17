@@ -1,0 +1,15 @@
+# Build artifacts and training data (machine-specific, NEVER commit .gcda)
+work/
+*.gcda
+*.gcno
+*.gcov
+*.profdata
+*.profraw
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Caches from the emulator source copy (downloaded dependencies)
+emulator-source/.cache/
